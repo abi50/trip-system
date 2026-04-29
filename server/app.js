@@ -8,6 +8,7 @@ import e from 'cors';
 import studentsRoutes from './routes/students.routes.js';
 import teachersRoutes from './routes/teacher.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import locationRoutes from './routes/location.routes.js';
 import { errorHandler } from './middleware/auth.middleware.js';
 
 dotenv.config();
@@ -36,7 +37,7 @@ mongoose
   app.use("/api/students",  studentsRoutes);     
   app.use("/api/teachers", teachersRoutes);
   app.use("/api/auth", authRoutes);
-
+  app.use("/api/locations", locationRoutes);
   app.use(errorHandler);
   
       app.get('/', (req, res) => {
