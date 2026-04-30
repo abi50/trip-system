@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { clearUser, getSavedUser, UserPayload } from "@/api/auth.service";
 import { teacherApi, Student } from "@/api/teacher.service";
 import "@/style/Auth.css";
-import { GoogleMap, Marker, LoadScript, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, Marker, useJsApiLoader, InfoWindow } from "@react-google-maps/api";
 import { locationApi, StudentLocation } from "@/api/locations.service";
 
 
@@ -26,7 +26,9 @@ export default function TeacherPage() {
         borderRadius: "12px",
         marginTop: "40px",
     };
-
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    });
 
     const loadLocations = async () => {
         try {
@@ -111,7 +113,7 @@ export default function TeacherPage() {
                                 תלמידות הכיתה
                             </h2>
                             <p className="text-sm text-slate-500">
-                                 {students.length} תלמידות
+                                {students.length} תלמידות
                             </p>
                         </div>
 
@@ -163,7 +165,6 @@ export default function TeacherPage() {
 
                 </div>
 
-                <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}>
                     <GoogleMap
                         mapContainerStyle={mapContainerStyle}
                         center={
@@ -195,7 +196,6 @@ export default function TeacherPage() {
                                 }} />
                         ))}
                     </GoogleMap>
-                </LoadScript>
             </div>
 
 
