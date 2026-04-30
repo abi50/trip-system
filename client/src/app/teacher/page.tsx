@@ -17,9 +17,11 @@ export default function TeacherPage() {
     const [loading, setLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
 
+
     const [showMap, setShowMap] = useState(false);
 
     const [locations, setLocations] = useState<StudentLocation[]>([]);
+    const [teacherLocation, setTeacherLocation] = useState<StudentLocation | null>(null);
     const mapContainerStyle = {
         width: "100%",
         height: "800px",
@@ -30,15 +32,23 @@ export default function TeacherPage() {
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     });
 
-    const loadLocations = async (teacherId: string) => {
+    const loadLocations = async () => {
         try {
-            const response = await locationApi.getMyStudentsLocations(teacherId);
+            const response = await locationApi.getMyStudentsLocations();
             setLocations(response.data);
         } catch (error) {
             console.error("Error loading locations:", error);
         }
     };
 
+    const loadTeacherLocation = async () => {
+        try {
+            const response = await locationApi.getTeacherLocation();
+            setTeacherLocation(response.data);
+        } catch (error) {
+            console.error("Error loading teacher location:", error);
+        }
+    };
 
     useEffect(() => {
         const savedUser = getSavedUser();
@@ -54,22 +64,24 @@ export default function TeacherPage() {
         }
 
         setTeacher(savedUser);
-        loadStudents(savedUser.id);
-        loadLocations(savedUser.id);
+        loadStudents();
+        loadLocations();
+        loadTeacherLocation();
 
         const intervalId = setInterval(() => {
-            loadLocations(savedUser.id);
+            loadLocations();
         }, 60000);
 
         return () => clearInterval(intervalId);
     }, [router]);
 
-    const loadStudents = async (teacherId: string) => {
+    const loadStudents = async () => {
         try {
-            const response = await teacherApi.getStudentsByTeacherId(teacherId);
+            const response = await teacherApi.getMyStudents();
             setStudents(response.data);
         } catch (error: any) {
             console.error("Error loading locations:", error.response?.data || error);
+
             alert("שגיאה בטעינת התלמידות");
         } finally {
             setLoading(false);
@@ -87,6 +99,7 @@ export default function TeacherPage() {
 
     return (
         <div dir="rtl" className="min-h-screen bg-slate-100 px-6 py-10">
+            
             <div className="mx-auto max-w-5xl">
                 <div className="mb-8 rounded-3xl bg-white p-8 shadow-sm">
                     <div className="flex items-center justify-between gap-4">
@@ -179,6 +192,21 @@ export default function TeacherPage() {
                             }}
                     zoom={13}
                 >
+                    {teacherLocation && (
+                        <Marker
+                            key={teacherLocation.studentId}
+                            position={{
+                                lat: teacherLocation.latitude,
+                                lng: teacherLocation.longitude,
+                            }}
+                            label={{
+                                text: `teacher ${teacherLocation.studentId} `,
+                                color: "black",
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                            }}
+                        />
+                    )}
                     {locations.map((location) => (
                         <Marker
                             key={location.studentId}
@@ -186,7 +214,6 @@ export default function TeacherPage() {
                                 lat: location.latitude,
                                 lng: location.longitude,
                             }}
-                            title={` ${location.firstName} ${location.lastName} `}
                             label={{
                                 text: location.studentId,
                                 color: "black",

@@ -9,6 +9,6 @@ export interface Student {
 }
 
 export const teacherApi = {
-  getStudentsByTeacherId: (teacherId: string) =>
-    axiosClient.get<Student[]>(`/teachers/${teacherId}/students`),
+  getMyStudents: () =>
+    axiosClient.get<Student[]>(`/teachers/my-students`),
 };

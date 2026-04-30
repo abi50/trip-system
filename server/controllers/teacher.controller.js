@@ -58,7 +58,7 @@ export const getTeacherByClass = async (req, res) => {
 
 export const getStudentsByTeacherClass = async (req, res) => {
     try {
-        const teacherId = req.params.id;
+        const teacherId = req.user.id;
         const teacher = await Teacher.findOne({ id: teacherId });
         if (!teacher) {
             return res.status(404).json({ message: "Teacher not found" });
