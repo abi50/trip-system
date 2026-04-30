@@ -30,9 +30,9 @@ export default function TeacherPage() {
         googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     });
 
-    const loadLocations = async () => {
+    const loadLocations = async (teacherId: string) => {
         try {
-            const response = await locationApi.getAllLocations();
+            const response = await locationApi.getMyStudentsLocations(teacherId);
             setLocations(response.data);
         } catch (error) {
             console.error("Error loading locations:", error);
@@ -55,10 +55,10 @@ export default function TeacherPage() {
 
         setTeacher(savedUser);
         loadStudents(savedUser.id);
-        loadLocations();
+        loadLocations(savedUser.id);
 
         const intervalId = setInterval(() => {
-            loadLocations();
+            loadLocations(savedUser.id);
         }, 60000);
 
         return () => clearInterval(intervalId);
@@ -68,8 +68,8 @@ export default function TeacherPage() {
         try {
             const response = await teacherApi.getStudentsByTeacherId(teacherId);
             setStudents(response.data);
-        } catch (error) {
-            console.error("Error loading students:", error);
+        } catch (error: any) {
+            console.error("Error loading locations:", error.response?.data || error);
             alert("שגיאה בטעינת התלמידות");
         } finally {
             setLoading(false);
@@ -81,7 +81,7 @@ export default function TeacherPage() {
         router.push("/");
     };
 
-    if (loading) {
+    if (loading || !isLoaded) {
         return <div className="home-container">טוען...</div>;
     }
 
@@ -165,37 +165,37 @@ export default function TeacherPage() {
 
                 </div>
 
-                    <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
-                        center={
-                            locations.length > 0
-                                ? {
-                                    lat: locations[0].latitude,
-                                    lng: locations[0].longitude,
-                                }
-                                : {
-                                    lat: 32.0853,
-                                    lng: 34.8054,
-                                }}
-                        zoom={13}
-                    >
-                        {locations.map((location) => (
-                            <Marker
-                                key={location.studentId}
-                                position={{
-                                    lat: location.latitude,
-                                    lng: location.longitude,
-                                }}
-                                title={` ${location.firstName} ${location.lastName} `}
-                                label={{
-                                    text: location.studentId,
-                                    color: "black",
-                                    fontSize: "12px",
-                                    fontWeight: "bold",
+                <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    center={
+                        locations.length > 0
+                            ? {
+                                lat: locations[0].latitude,
+                                lng: locations[0].longitude,
+                            }
+                            : {
+                                lat: 32.0853,
+                                lng: 34.8054,
+                            }}
+                    zoom={13}
+                >
+                    {locations.map((location) => (
+                        <Marker
+                            key={location.studentId}
+                            position={{
+                                lat: location.latitude,
+                                lng: location.longitude,
+                            }}
+                            title={` ${location.firstName} ${location.lastName} `}
+                            label={{
+                                text: location.studentId,
+                                color: "black",
+                                fontSize: "12px",
+                                fontWeight: "bold",
 
-                                }} />
-                        ))}
-                    </GoogleMap>
+                            }} />
+                    ))}
+                </GoogleMap>
             </div>
 
 

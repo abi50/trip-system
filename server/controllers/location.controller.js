@@ -1,5 +1,6 @@
 import Location from "../models/location.model.js";
 import Student from "../models/student.model.js";
+import Teacher from "../models/teacher.model.js";
 
 const dmsToDecimal = ({ Degrees, Minutes, Seconds }) => {
   return (
@@ -54,3 +55,21 @@ export const getAllLocations = async (req, res) => {
     });
   }
 };
+
+export const getMyStudentsLocations = async (req, res) => {
+    try {
+        const { teacherId } = req.params;
+        const teacher = await Teacher.findOne({id: teacherId});
+        if(!teacher) {
+            return res.status(404).json({message: "Teacher not found"});
+        }
+        const students = await Student.find({className: teacher.className});
+        const locations = await Location.find({ studentId: { $in: students.map(s => s.id) } });
+        res.json(locations);
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching my students' locations",
+            error: error.message,
+        });
+    }
+}

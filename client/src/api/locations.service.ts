@@ -1,4 +1,4 @@
-import axsiosClient from "./axiosClient";
+import axiosClient  from "./axiosClient";
 
 export interface StudentLocation{
    _id: string;
@@ -12,5 +12,6 @@ export interface StudentLocation{
 }
 
 export const locationApi = {
-    getAllLocations: () => axsiosClient.get<StudentLocation[]>("/locations"),
+    getAllLocations: () => axiosClient .get<StudentLocation[]>("/locations"),
+    getMyStudentsLocations: (teacherId: string) => axiosClient .get<StudentLocation[]>(`/locations/teacher/${teacherId}`),
 };
