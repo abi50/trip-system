@@ -51,29 +51,6 @@ Students send their location to the server every minute, and the system displays
 - Teacher can visually track all students
   <img width="1826" height="888" alt="Screenshot 2026-04-30 201614" src="https://github.com/user-attachments/assets/f07420fe-f6b5-488d-ba78-a60adbfa25bb" />
 
----
-
-##  API Endpoints
-
-### Auth
-- POST /api/auth/register
-- POST /api/auth/login
-- GET /api/auth/me
-
-### Students
-- GET /api/students
-- GET /api/students/:id
-- GET /api/students/class/:className
-
-### Teachers
-- GET /api/teachers
-- GET /api/teachers/:id
-- GET /api/teachers/:id/students
-
-### Locations
-- POST /api/locations
-- GET /api/locations
-- GET /api/locations/teacher/:teacherId
 
 ---
 
