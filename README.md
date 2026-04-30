@@ -37,7 +37,7 @@ Students send their location to the server every minute, and the system displays
 ###  Teacher Dashboard
 - View all students in the same class
 - Interactive map displaying student locations
-  <img width="1786" height="877" alt="Screenshot 2026-04-30 201905" src="https://github.com/user-attachments/assets/b6eb6a4c-dc7c-4e54-be47-48fc67adfa8e" />
+<img width="1293" height="833" alt="image" src="https://github.com/user-attachments/assets/c6ea76d1-7eca-47a9-ae84-10a720c7474c" />
 
 
 ###  Location Tracking
